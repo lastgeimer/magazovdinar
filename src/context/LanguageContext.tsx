@@ -76,7 +76,7 @@ const translations: Record<Language, Record<string, string>> = {
     'contact.send': 'Отправить',
     'contact.response': 'Время ответа',
     'contact.responseTime': 'В течение часа',
-    'footer.rights': '© 2025 DINARIX. Все права защищены.',
+    'footer.rights': '© 2026 DINARIX. Все права защищены.',
   },
   en: {
     'nav.about': 'About',
@@ -145,7 +145,7 @@ const translations: Record<Language, Record<string, string>> = {
     'contact.send': 'Send Message',
     'contact.response': 'Response Time',
     'contact.responseTime': 'Within an hour',
-    'footer.rights': '© 2025 DINARIX. All rights reserved.',
+    'footer.rights': '© 2026 DINARIX. All rights reserved.',
   },
 };
 

@@ -1,20 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
-type Trail = {
-  x: number;
-  y: number;
-  id: number;
-};
-
 export default function Cursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
-  const [trail, setTrail] = useState<Trail[]>([]);
   const [isMobile, setIsMobile] = useState(false);
 
   const mouse = useRef({ x: 0, y: 0 });
   const pos = useRef({ x: 0, y: 0 });
+  const targetScale = useRef(1);
+  const currentScale = useRef(1);
 
-  // ✅ Проверка мобилки
+  // ✅ Проверка мобильного
   useEffect(() => {
     const mobile =
       /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
@@ -23,26 +18,51 @@ export default function Cursor() {
     setIsMobile(mobile);
   }, []);
 
-  // ✅ Движение мыши
+  // ✅ Отслеживание мыши
   useEffect(() => {
     if (isMobile) return;
 
     const move = (e: MouseEvent) => {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
-
-      // создаём след
-      setTrail((prev) => [
-        ...prev,
-        { x: e.clientX, y: e.clientY, id: Date.now() }
-      ].slice(-20));
     };
 
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
   }, [isMobile]);
 
-  // ✅ Плавное следование
+  // ✅ Магнит к кнопкам
+  useEffect(() => {
+    if (isMobile) return;
+
+    const magneticElements = document.querySelectorAll(
+      "a, button, [data-magnetic]"
+    );
+
+    magneticElements.forEach((el) => {
+      const element = el as HTMLElement;
+
+      element.addEventListener("mousemove", (e: MouseEvent) => {
+        const rect = element.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const distanceX = e.clientX - centerX;
+        const distanceY = e.clientY - centerY;
+
+        mouse.current.x = centerX + distanceX * 0.3;
+        mouse.current.y = centerY + distanceY * 0.3;
+
+        targetScale.current = 1.8;
+      });
+
+      element.addEventListener("mouseleave", () => {
+        targetScale.current = 1;
+      });
+    });
+  }, [isMobile]);
+
+  // ✅ Анимация
   useEffect(() => {
     if (isMobile) return;
 
@@ -52,8 +72,14 @@ export default function Cursor() {
       pos.current.x += (mouse.current.x - pos.current.x) * 0.15;
       pos.current.y += (mouse.current.y - pos.current.y) * 0.15;
 
+      currentScale.current +=
+        (targetScale.current - currentScale.current) * 0.15;
+
       if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate(${pos.current.x}px, ${pos.current.y}px)`;
+        cursorRef.current.style.transform = `
+          translate(${pos.current.x}px, ${pos.current.y}px)
+          scale(${currentScale.current})
+        `;
       }
 
       animationFrame = requestAnimationFrame(animate);
@@ -63,60 +89,29 @@ export default function Cursor() {
     return () => cancelAnimationFrame(animationFrame);
   }, [isMobile]);
 
-  // ✅ Удаление старых точек следа
-  useEffect(() => {
-    if (trail.length === 0) return;
-
-    const timeout = setTimeout(() => {
-      setTrail((prev) => prev.slice(1));
-    }, 40);
-
-    return () => clearTimeout(timeout);
-  }, [trail]);
-
   if (isMobile) return null;
 
   return (
-    <>
-      {/* След */}
-      {trail.map((dot, index) => (
-        <div
-          key={dot.id}
-          style={{
-            position: "fixed",
-            left: dot.x,
-            top: dot.y,
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            pointerEvents: "none",
-            transform: "translate(-50%, -50%)",
-            background: "radial-gradient(circle, #c084fc 0%, #7c3aed 60%, transparent 100%)",
-            opacity: index / trail.length,
-            zIndex: 9998,
-          }}
-        />
-      ))}
-
-      {/* Основной курсор */}
-      <div
-        ref={cursorRef}
-        style={{
-          position: "fixed",
-          width: 18,
-          height: 18,
-          borderRadius: "50%",
-          pointerEvents: "none",
-          transform: "translate(-50%, -50%)",
-          background: "radial-gradient(circle at 30% 30%, #e9d5ff, #a855f7 40%, #6b21a8 80%)",
-          boxShadow: `
-            0 0 10px #a855f7,
-            0 0 25px rgba(168,85,247,0.6),
-            0 0 60px rgba(168,85,247,0.4)
-          `,
-          zIndex: 9999,
-        }}
-      />
-    </>
+    <div
+      ref={cursorRef}
+      style={{
+        position: "fixed",
+        width: 28,
+        height: 28,
+        borderRadius: "50%",
+        pointerEvents: "none",
+        transform: "translate(-50%, -50%)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        background:
+          "radial-gradient(circle at 30% 30%, rgba(233,213,255,0.8), rgba(168,85,247,0.4) 40%, rgba(124,58,237,0.2) 70%, transparent 100%)",
+        border: "1px solid rgba(168,85,247,0.6)",
+        boxShadow: `
+          0 0 15px rgba(168,85,247,0.7),
+          0 0 40px rgba(168,85,247,0.4)
+        `,
+        zIndex: 9999,
+      }}
+    />
   );
 }

@@ -55,7 +55,7 @@ export default function About() {
                 }}
               >
                 <img
-                  src="/photo/me.jpg"
+                  src="photo/me.jpg"
                   alt="DINARIX"
                   style={{
                     position: 'absolute',

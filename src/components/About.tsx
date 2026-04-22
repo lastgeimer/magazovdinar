@@ -56,7 +56,7 @@ export default function About() {
           >
             <img
               // ВАЖНО: используем BASE_URL, чтобы путь был правильным везде
-              src={`${import.meta.env.BASE_URL}photo/me.jpg`}
+              src="photo/me.jpg"
               alt="DINARIX"
               style={{
                 position: 'absolute',

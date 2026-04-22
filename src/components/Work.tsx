@@ -422,7 +422,7 @@ export default function Work() {
               <div
                 className="work-card group"
                 onClick={() => setActiveProject(project)}
-                data-hover
+                data-project
               >
                 <div className="work-thumb">
                   <div

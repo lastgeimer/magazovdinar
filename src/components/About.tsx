@@ -39,39 +39,40 @@ export default function About() {
               onMouseEnter={() => setPhotoHovered(true)}
               onMouseLeave={() => setPhotoHovered(false)}
             >
-              <div
-                style={{
-                  width: 'clamp(180px, 22vw, 260px)',
-                  aspectRatio: '3/4',
-                  borderRadius: '4px',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  border: photoHovered ? '1px solid rgba(168,85,247,0.5)' : '1px solid rgba(168,85,247,0.2)',
-                  transition: 'all 0.6s ease',
-                  transform: photoHovered ? 'translateY(-8px)' : 'translateY(0)',
-                  boxShadow: photoHovered
-                    ? '0 20px 60px rgba(168,85,247,0.15), 0 0 40px rgba(168,85,247,0.05)'
-                    : 'none',
-                }}
-              >
-                <img
-                  src="photo/me.jpg"
-                  alt="DINARIX"
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    display: 'block',
-                    transition: 'transform 0.6s ease',
-                    transform: photoHovered ? 'scale(1.05)' : 'scale(1)',
-                    zIndex: 2,
-                  }}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
+          <div
+            style={{
+              width: 'clamp(180px, 22vw, 260px)',
+              aspectRatio: '3/4',
+              borderRadius: '4px',
+              overflow: 'hidden',
+              position: 'relative',
+              border: photoHovered ? '1px solid rgba(168,85,247,0.5)' : '1px solid rgba(168,85,247,0.2)',
+              transition: 'all 0.6s ease',
+              transform: photoHovered ? 'translateY(-8px)' : 'translateY(0)',
+              boxShadow: photoHovered
+                ? '0 20px 60px rgba(168,85,247,0.15), 0 0 40px rgba(168,85,247,0.05)'
+                : 'none',
+            }}
+          >
+            <img
+              // ВАЖНО: используем BASE_URL, чтобы путь был правильным везде
+              src={`${import.meta.env.BASE_URL}photo/me.jpg`}
+              alt="DINARIX"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+                transition: 'transform 0.6s ease',
+                transform: photoHovered ? 'scale(1.05)' : 'scale(1)',
+                zIndex: 2,
+              }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
 
                 <div
                   style={{

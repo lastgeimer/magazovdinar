@@ -128,11 +128,6 @@ function VideoModal({
   const [fullscreen, setFullscreen] = useState(false);
   const [isVertical, setIsVertical] = useState(false);
 
-  const isRu = language === 'ru';
-  const projectTitle = isRu ? project.titleRu : project.title;
-  const projectClient = isRu ? project.clientRu : project.client;
-  const projectTags = isRu ? project.tagsRu : project.tags;
-
   useEffect(() => {
     document.body.style.overflow = 'hidden';
 
@@ -274,40 +269,6 @@ function VideoModal({
         onMouseMove={resetTimer}
         onMouseLeave={() => playing && setShowControls(false)}
       >
-        <div className="modal-header">
-          <div className="modal-header-top">
-            <div className="modal-header-text">
-              <h3 className="modal-title">{projectTitle}</h3>
-              <p className="modal-subtitle">
-                {projectClient} · {project.year}
-              </p>
-            </div>
-            <button className="modal-close" onClick={onClose} aria-label="Close">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="modal-tags">
-            {projectTags.map((tag) => (
-              <span key={tag} className="modal-tag">
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-
         <div
           className="modal-video-wrap"
           style={{ cursor: showControls ? 'default' : 'none' }}
@@ -327,6 +288,32 @@ function VideoModal({
             playsInline
             preload="metadata"
           />
+
+          {/* Кнопка закрытия поверх видео */}
+          <button 
+            className="modal-close-overlay" 
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }} 
+            aria-label="Close"
+            style={{ opacity: showControls ? 1 : 0 }}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
 
           {!playing && (
             <div className="modal-play-overlay">
@@ -566,7 +553,7 @@ export default function Work() {
           position:relative;
           overflow:hidden;
           border-radius:10px;
-          background:#08080f;
+          background:#000;
           border:1px solid rgba(168,85,247,.24);
           box-shadow:0 0 0 1px rgba(168,85,247,.08),0 40px 100px rgba(0,0,0,.8),0 0 80px rgba(124,58,237,.12);
           animation:modalIn .4s cubic-bezier(.16,1,.3,1) forwards;
@@ -588,30 +575,11 @@ export default function Work() {
           border-radius:0;
         }
         
-        .modal-container--fullscreen .modal-header{
-          position:absolute;
-          top:0;
-          left:0;
-          right:0;
-          z-index:10;
-          background:linear-gradient(180deg,rgba(8,8,15,.95),transparent);
-        }
-        
         .modal-container--fullscreen .modal-video-wrap{
           height:100vh;
         }
         
         @keyframes modalIn{from{opacity:0;transform:scale(.94) translateY(24px)}to{opacity:1;transform:scale(1) translateY(0)}}
-        
-        .modal-header{padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.05);background:linear-gradient(180deg,rgba(168,85,247,.03),transparent),#08080f;flex-shrink:0}
-        .modal-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
-        .modal-header-text{min-width:0;flex:1;padding-top:2px}
-        .modal-title{font-size:18px;font-weight:700;color:rgba(255,255,255,.92);margin-bottom:4px;line-height:1.25}
-        .modal-subtitle{font-family:monospace;font-size:12px;color:rgba(255,255,255,.35);line-height:1.4}
-        .modal-tags{display:flex;flex-wrap:wrap;gap:8px}
-        .modal-tag{font-family:monospace;font-size:10px;padding:3px 10px;border-radius:999px;color:rgba(192,132,252,.9);border:1px solid rgba(168,85,247,.25);background:rgba(168,85,247,.08)}
-        .modal-close{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);cursor:pointer;transition:all .25s}
-        .modal-close:hover{background:rgba(168,85,247,.2);border-color:rgba(168,85,247,.5);color:#c084fc;transform:rotate(90deg)}
         
         .modal-video-wrap{
           position:relative;
@@ -629,6 +597,32 @@ export default function Work() {
           display:block;
           object-fit:contain;
           background:#000;
+        }
+        
+        .modal-close-overlay{
+          position:absolute;
+          top:20px;
+          right:20px;
+          z-index:10;
+          width:40px;
+          height:40px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          border-radius:50%;
+          background:rgba(0,0,0,.6);
+          backdrop-filter:blur(10px);
+          border:1px solid rgba(255,255,255,.15);
+          color:rgba(255,255,255,.8);
+          cursor:pointer;
+          transition:all .3s;
+        }
+        
+        .modal-close-overlay:hover{
+          background:rgba(168,85,247,.3);
+          border-color:rgba(168,85,247,.6);
+          color:#c084fc;
+          transform:rotate(90deg) scale(1.1);
         }
         
         .modal-play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:3}
@@ -658,11 +652,7 @@ export default function Work() {
           .modal-backdrop{padding:12px}
           .modal-container{max-height:95vh}
           .modal-container--vertical{max-width:100%}
-          .modal-header{padding:14px 16px 12px}
-          .modal-header-top{gap:12px;margin-bottom:12px}
-          .modal-title{font-size:15px}
-          .modal-subtitle{font-size:11px}
-          .modal-close{width:34px;height:34px}
+          .modal-close-overlay{top:12px;right:12px;width:36px;height:36px}
           .modal-controls{padding:32px 14px 12px}
           .modal-volume-slider{width:56px}
           .modal-time{font-size:10px}

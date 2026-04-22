@@ -56,7 +56,7 @@ export default function About() {
           >
             <img
               // ВАЖНО: используем BASE_URL, чтобы путь был правильным везде
-              src="photo/me.jpg"
+              src="/photo/me.jpg" 
               alt="DINARIX"
               style={{
                 position: 'absolute',

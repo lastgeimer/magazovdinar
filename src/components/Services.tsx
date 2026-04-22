@@ -80,6 +80,7 @@ export default function Services() {
         </div>
 <<<<<<< HEAD
 
+// ... (предыдущий код)
         {/* CTA */}
         <div className="mt-16 text-center">
           <button
@@ -93,8 +94,6 @@ export default function Services() {
             </svg>
           </button>
         </div>
-=======
->>>>>>> 7139c61b7c643a4e850fd2bffa8d2abe8b79ed79
       </div>
     </section>
   );

@@ -29,8 +29,8 @@ const projects: Project[] = [
     tags: ['Editing', 'Color', 'Subtitles', 'SFX'],
     tagsRu: ['Монтаж', 'Цвет', 'Субтитры', 'Звуковые эффекты'],
     gradient: 'linear-gradient(135deg, #1a0533, #2d1060)',
-    preview: 'previews/project1.jpg', // Убрал /
-    video: 'videos/project1.mp4',    // Убрал /
+    preview: '/previews/project1.jpg', // Вернули /
+    video: '/videos/project1.mp4',    // Вернули /
   },
   {
     id: 2,
@@ -43,8 +43,8 @@ const projects: Project[] = [
     tags: ['Editing', 'Color', 'Text', 'Animation'],
     tagsRu: ['Монтаж', 'Цвет', 'Текст', 'Анимация'],
     gradient: 'linear-gradient(135deg, #0a1628, #1e1060)',
-    preview: 'previews/project2.jpg',
-    video: 'videos/project2.mp4',
+    preview: '/previews/project2.jpg',
+    video: '/videos/project2.mp4',
   },
   {
     id: 3,
@@ -57,8 +57,8 @@ const projects: Project[] = [
     tags: ['Editing', 'Color', 'Subtitles', 'Animation'],
     tagsRu: ['Монтаж', 'Цвет', 'Субтитры', 'Анимация'],
     gradient: 'linear-gradient(135deg, #0d1a0d, #1a3320)',
-    preview: 'previews/project3.jpg',
-    video: 'videos/project3.mp4',
+    preview: '/previews/project3.jpg',
+    video: '/videos/project3.mp4',
   },
   {
     id: 4,
@@ -71,8 +71,8 @@ const projects: Project[] = [
     tags: ['Editing', 'Text', 'Animation', 'Sound'],
     tagsRu: ['Монтаж', 'Текст', 'Анимация', 'Звук'],
     gradient: 'linear-gradient(135deg, #1a1a0a, #332a00)',
-    preview: 'previews/project4.jpg',
-    video: 'videos/project4.mp4',
+    preview: '/previews/project4.jpg',
+    video: '/videos/project4.mp4',
   },
   {
     id: 5,
@@ -85,8 +85,8 @@ const projects: Project[] = [
     tags: ['Editing', 'Color', 'Text', 'Animation'],
     tagsRu: ['Монтаж', 'Цвет', 'Текст', 'Анимация'],
     gradient: 'linear-gradient(135deg, #1a0028, #0a0a40)',
-    preview: 'previews/project5.jpg',
-    video: 'videos/project5.mp4',
+    preview: '/previews/project5.jpg',
+    video: '/videos/project5.mp4',
   },
   {
     id: 6,
@@ -99,8 +99,8 @@ const projects: Project[] = [
     tags: ['Editing', 'Color', 'Text', 'Animation', 'Motion'],
     tagsRu: ['Монтаж', 'Цвет', 'Текст', 'Анимация', 'Моушн'],
     gradient: 'linear-gradient(135deg, #0d0d1a, #1a1030)',
-    preview: 'previews/project6.jpg',
-    video: 'videos/project6.mp4',
+    preview: '/previews/project6.jpg',
+    video: '/videos/project6.mp4',
   },
 ];
 

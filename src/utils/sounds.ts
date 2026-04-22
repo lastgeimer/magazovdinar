@@ -1,12 +1,15 @@
 type SoundName = 'click' | 'hover' | 'whoosh' | 'pop' | 'toggle' | 'success';
 
+// Получаем базовый путь (автоматически '/magazovdinar/' на GitHub)
+const baseUrl = import.meta.env.BASE_URL;
+
 const soundPaths: Record<SoundName, string> = {
-  click: '/sounds/click.mp3',
-  hover: '/sounds/hover.mp3',
-  whoosh: '/sounds/whoosh.mp3',
-  pop: '/sounds/pop.mp3',
-  toggle: '/sounds/toggle.mp3',
-  success: '/sounds/success.mp3',
+  click: `${baseUrl}sounds/click.mp3`,
+  hover: `${baseUrl}sounds/hover.mp3`,
+  whoosh: `${baseUrl}sounds/whoosh.mp3`,
+  pop: `${baseUrl}sounds/pop.mp3`,
+  toggle: `${baseUrl}sounds/toggle.mp3`,
+  success: `${baseUrl}sounds/success.mp3`,
 };
 
 const audioCache: Partial<Record<SoundName, HTMLAudioElement[]>> = {};
@@ -37,7 +40,6 @@ function getAudio(name: SoundName): HTMLAudioElement | null {
     return available;
   }
 
-  // All busy — clone one
   const clone = new Audio(soundPaths[name]);
   clone.volume = globalVolume;
   pool.push(clone);
@@ -47,9 +49,7 @@ function getAudio(name: SoundName): HTMLAudioElement | null {
 export function playSound(name: SoundName) {
   const audio = getAudio(name);
   if (audio) {
-    void audio.play().catch(() => {
-      // Browser blocked autoplay — ignore
-    });
+    void audio.play().catch(() => {}); 
   }
 }
 
@@ -65,7 +65,6 @@ export function isSoundEnabled() {
   return soundEnabled;
 }
 
-// Preload all sounds
 export function preloadSounds() {
   (Object.keys(soundPaths) as SoundName[]).forEach((name) => {
     getAudio(name);

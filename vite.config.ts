@@ -9,12 +9,9 @@ const __dirname = path.dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Обязательно добавьте эту строку ниже:
-  base: '/magazovdinar/', 
-  
-  // Я убрал viteSingleFile(), так как для GitHub Pages он не нужен и может мешать
-  plugins: [react(), tailwindcss()], 
-  
+  // Измени на '/', потому что теперь сайт в корне домена
+  base: '/', 
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),

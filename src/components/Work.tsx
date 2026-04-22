@@ -154,7 +154,6 @@ function VideoModal({
 
     const v = videoRef.current;
     if (v) {
-      // Определяем ориентацию видео при загрузке метаданных
       const handleLoadedMetadata = () => {
         if (v.videoWidth && v.videoHeight) {
           setIsVertical(v.videoHeight > v.videoWidth);
@@ -399,6 +398,131 @@ function VideoModal({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ── Main Work Component ── */
+export default function Work() {
+  const { language, t } = useLanguage();
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const isRu = language === 'ru';
+
+  return (
+    <section id="work" className="work-section border-t border-[#1e1e2e] w-full">
+      <div className="work-container">
+        <ScrollReveal direction="up" delay={0}>
+          <div className="work-header">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="font-mono text-xs text-purple-500 tracking-[0.3em] uppercase">
+                {isRu ? '02 — Работы' : '02 — Works'}
+              </span>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold text-white/90 leading-tight">
+              {t('works.title')}{' '}
+              <span className="text-gradient">{isRu ? 'Проекты' : 'Projects'}</span>
+            </h2>
+          </div>
+        </ScrollReveal>
+
+        <div className="work-grid">
+          {projects.map((project, idx) => (
+            <ScrollReveal key={project.id} direction="up" delay={idx * 120 + 150}>
+              <div
+                className="work-card group"
+                onClick={() => setActiveProject(project)}
+                data-hover
+              >
+                <div className="work-thumb">
+                  <div
+                    className="work-thumb-gradient"
+                    style={{ background: project.gradient }}
+                  />
+                  <img
+                    src={project.preview}
+                    alt={isRu ? project.titleRu : project.title}
+                    className="work-thumb-img"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  <div className="work-thumb-grid" />
+                  <div className="work-play-wrap">
+                    <div className="work-play-btn">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="rgba(168,85,247,0.95)"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="work-duration">{project.duration}</div>
+                </div>
+                <div className="work-info">
+                  <h3 className="work-title">
+                    {isRu ? project.titleRu : project.title}
+                  </h3>
+                  <p className="work-meta">
+                    {isRu ? project.clientRu : project.client} · {project.year}
+                  </p>
+                  <div className="work-tags">
+                    {(isRu ? project.tagsRu : project.tags).map((tag) => (
+                      <span key={tag} className="work-tag">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        <ScrollReveal direction="up" delay={300}>
+          <div className="work-cta">
+            <a
+              href="https://t.me/ManFairFold"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="work-cta-btn"
+              data-hover
+            >
+              <span className="work-cta-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+              {t('works.showreel')}
+              <svg
+                className="work-cta-arrow"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </a>
+          </div>
+        </ScrollReveal>
+      </div>
+
+      {activeProject && (
+        <VideoModal
+          project={activeProject}
+          onClose={() => setActiveProject(null)}
+          language={language}
+        />
+      )}
 
       <style>{`
         .work-section{padding:128px 0}
@@ -544,131 +668,6 @@ function VideoModal({
           .modal-time{font-size:10px}
         }
       `}</style>
-    </section>
-  );
-}
-
-/* ── Main Work Component ── */
-export default function Work() {
-  const { language, t } = useLanguage();
-  const [activeProject, setActiveProject] = useState<Project | null>(null);
-  const isRu = language === 'ru';
-
-  return (
-    <section id="work" className="work-section border-t border-[#1e1e2e] w-full">
-      <div className="work-container">
-        <ScrollReveal direction="up" delay={0}>
-          <div className="work-header">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="font-mono text-xs text-purple-500 tracking-[0.3em] uppercase">
-                {isRu ? '02 — Работы' : '02 — Works'}
-              </span>
-            </div>
-            <h2 className="text-5xl md:text-6xl font-bold text-white/90 leading-tight">
-              {t('works.title')}{' '}
-              <span className="text-gradient">{isRu ? 'Проекты' : 'Projects'}</span>
-            </h2>
-          </div>
-        </ScrollReveal>
-
-        <div className="work-grid">
-          {projects.map((project, idx) => (
-            <ScrollReveal key={project.id} direction="up" delay={idx * 120 + 150}>
-              <div
-                className="work-card group"
-                onClick={() => setActiveProject(project)}
-                data-hover
-              >
-                <div className="work-thumb">
-                  <div
-                    className="work-thumb-gradient"
-                    style={{ background: project.gradient }}
-                  />
-                  <img
-                    src={project.preview}
-                    alt={isRu ? project.titleRu : project.title}
-                    className="work-thumb-img"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                  <div className="work-thumb-grid" />
-                  <div className="work-play-wrap">
-                    <div className="work-play-btn">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="rgba(168,85,247,0.95)"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="work-duration">{project.duration}</div>
-                </div>
-                <div className="work-info">
-                  <h3 className="work-title">
-                    {isRu ? project.titleRu : project.title}
-                  </h3>
-                  <p className="work-meta">
-                    {isRu ? project.clientRu : project.client} · {project.year}
-                  </p>
-                  <div className="work-tags">
-                    {(isRu ? project.tagsRu : project.tags).map((tag) => (
-                      <span key={tag} className="work-tag">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
-
-        <ScrollReveal direction="up" delay={300}>
-          <div className="work-cta">
-            <a
-              href="https://t.me/ManFairFold"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="work-cta-btn"
-              data-hover
-            >
-              <span className="work-cta-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-              {t('works.showreel')}
-              <svg
-                className="work-cta-arrow"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
-            </a>
-          </div>
-        </ScrollReveal>
-      </div>
-
-      {activeProject && (
-        <VideoModal
-          project={activeProject}
-          onClose={() => setActiveProject(null)}
-          language={language}
-        />
-      )}
     </section>
   );
 }

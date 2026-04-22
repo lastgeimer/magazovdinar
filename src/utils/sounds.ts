@@ -1,7 +1,7 @@
 type SoundName = 'click' | 'hover' | 'whoosh' | 'pop' | 'toggle' | 'success';
 
 // Жестко прописанный путь. Это 100% должно работать на GitHub Pages
-const baseUrl = '/magazovdinar/sounds/';
+const baseUrl = '/sounds/'; 
 
 const soundPaths: Record<SoundName, string> = {
   click: `${baseUrl}click.mp3`,

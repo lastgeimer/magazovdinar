@@ -250,7 +250,7 @@ body {
 /* ================= Hide default cursor (desktop only) ================= */
 
 @media (pointer: fine) {
-  body {
-    cursor: none;
+  * {
+    cursor: none !important;
   }
 }

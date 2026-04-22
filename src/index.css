@@ -1,0 +1,302 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-inter: 'Inter', sans-serif;
+
+  --color-void: #050507;
+  --color-obsidian: #0a0a0f;
+  --color-surface: #0f0f1a;
+  --color-surface-2: #141420;
+  --color-border: #1e1e2e;
+  --color-purple-deep: #1a0a2e;
+  --color-purple-mid: #6b21a8;
+  --color-purple-bright: #a855f7;
+  --color-purple-glow: #c084fc;
+  --color-purple-ultra: #e9d5ff;
+  --color-accent: #7c3aed;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  width: 100%;
+  /* No scroll-behavior smooth here — we control it via JS */
+}
+
+body {
+  background-color: #050507;
+  color: #e2e8f0;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
+  min-width: 0;
+}
+
+#root {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #050507;
+}
+::-webkit-scrollbar-thumb {
+  background: #6b21a8;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a855f7;
+}
+
+/* Selection */
+::selection {
+  background: rgba(168, 85, 247, 0.3);
+  color: #e9d5ff;
+}
+
+/* Noise texture overlay */
+.noise::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.015;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+/* Glow animations */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+<<<<<<< HEAD
+=======
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes glitch {
+  0%, 100% { clip-path: inset(0 0 100% 0); }
+  10% { clip-path: inset(10% 0 60% 0); transform: translateX(-4px); }
+  20% { clip-path: inset(40% 0 30% 0); transform: translateX(4px); }
+  30% { clip-path: inset(70% 0 10% 0); transform: translateX(-2px); }
+  40% { clip-path: inset(0 0 0 0); transform: translateX(0); }
+}
+
+@keyframes border-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+>>>>>>> 7139c61b7c643a4e850fd2bffa8d2abe8b79ed79
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+<<<<<<< HEAD
+=======
+@keyframes counter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+>>>>>>> 7139c61b7c643a4e850fd2bffa8d2abe8b79ed79
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 99% { opacity: 0; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.8s ease forwards;
+}
+
+.animate-slide-left {
+  animation: slide-in-left 0.8s ease forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(168,85,247,0.15) 50%, transparent 100%);
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 20s linear infinite;
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, #a855f7 0%, #c084fc 50%, #e9d5ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-white {
+  background: linear-gradient(135deg, #ffffff 0%, #c084fc 60%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glowing border */
+.border-glow {
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.05), inset 0 0 20px rgba(168, 85, 247, 0.03);
+}
+
+.border-glow:hover {
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.15), inset 0 0 40px rgba(168, 85, 247, 0.05);
+}
+
+/* Card glass */
+.glass {
+  background: rgba(15, 15, 26, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Purple line accent */
+.line-accent::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, #a855f7, transparent);
+  margin-top: 12px;
+}
+
+/* Nav blur */
+.nav-blur {
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  background: rgba(5, 5, 7, 0.85);
+}
+
+/* Video grid hover */
+.video-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(168,85,247,0.1) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.video-card:hover::after {
+  opacity: 1;
+}
+
+/* Cursor dot */
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: #a855f7;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease;
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+<<<<<<< HEAD
+/* =====================================================
+   INCREASED SECTION SPACING FOR BETTER AUTO-SCROLL
+   Each main section now has min-height: 100vh + generous
+   vertical padding so the wheel-snap autoscroll works
+   correctly and each section is fully visible.
+   ===================================================== */
+
+/* Work, About, Services, Testimonials, Contact */
+#work,
+#about,
+#services,
+#testimonials,
+#contact {
+  min-height: 100vh;
+  scroll-margin-top: 0;
+}
+
+/* Hero already uses minHeight: 100vh inline */
+
+/* Extra top/bottom spacing between major blocks */
+#work { padding-top: 10rem; padding-bottom: 10rem; }
+#about { padding-top: 10rem; padding-bottom: 10rem; }
+#services { padding-top: 10rem; padding-bottom: 10rem; }
+#testimonials { padding-top: 10rem; padding-bottom: 10rem; }
+#contact { padding-top: 10rem; padding-bottom: 10rem; }
+
+=======
+>>>>>>> 7139c61b7c643a4e850fd2bffa8d2abe8b79ed79
+/* Animation delays */
+.animation-delay-150 {
+  animation-delay: 150ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}

@@ -128,7 +128,9 @@ function VideoModal({
   const [fullscreen, setFullscreen] = useState(false);
   const [isVertical, setIsVertical] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
+    // Сохраняем текущее значение overflow
+    const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
     const handleKey = (e: KeyboardEvent) => {
@@ -148,15 +150,17 @@ function VideoModal({
     document.addEventListener('fullscreenchange', handleFs);
 
     const v = videoRef.current;
+    let metadataHandler: (() => void) | null = null;
+
     if (v) {
-      const handleLoadedMetadata = () => {
+      metadataHandler = () => {
         if (v.videoWidth && v.videoHeight) {
           setIsVertical(v.videoHeight > v.videoWidth);
         }
         handleTime();
       };
 
-      v.addEventListener('loadedmetadata', handleLoadedMetadata);
+      v.addEventListener('loadedmetadata', metadataHandler);
 
       void v
         .play()
@@ -169,17 +173,17 @@ function VideoModal({
           setPlaying(false);
           setShowControls(true);
         });
-
-      return () => {
-        v.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      };
     }
 
+    // Cleanup функция - всегда выполняется
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = originalOverflow; // Восстанавливаем исходное значение
       window.removeEventListener('keydown', handleKey);
       document.removeEventListener('fullscreenchange', handleFs);
       if (controlsTimer.current) clearTimeout(controlsTimer.current);
+      if (v && metadataHandler) {
+        v.removeEventListener('loadedmetadata', metadataHandler);
+      }
     };
   }, [onClose]);
 

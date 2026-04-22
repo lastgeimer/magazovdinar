@@ -1,16 +1,17 @@
 type SoundName = 'click' | 'hover' | 'whoosh' | 'pop' | 'toggle' | 'success';
 
-// Получаем базовый путь (автоматически '/magazovdinar/' на GitHub)
-const baseUrl = import.meta.env.BASE_URL;
+// Жестко прописанный путь. Это 100% должно работать на GitHub Pages
+const baseUrl = '/magazovdinar/sounds/';
 
 const soundPaths: Record<SoundName, string> = {
-  click: `${baseUrl}sounds/click.mp3`,
-  hover: `${baseUrl}sounds/hover.mp3`,
-  whoosh: `${baseUrl}sounds/whoosh.mp3`,
-  pop: `${baseUrl}sounds/pop.mp3`,
-  toggle: `${baseUrl}sounds/toggle.mp3`,
-  success: `${baseUrl}sounds/success.mp3`,
+  click: `${baseUrl}click.mp3`,
+  hover: `${baseUrl}hover.mp3`,
+  whoosh: `${baseUrl}whoosh.mp3`,
+  pop: `${baseUrl}pop.mp3`,
+  toggle: `${baseUrl}toggle.mp3`,
+  success: `${baseUrl}success.mp3`,
 };
+
 
 const audioCache: Partial<Record<SoundName, HTMLAudioElement[]>> = {};
 const POOL_SIZE = 4;

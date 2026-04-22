@@ -12,7 +12,7 @@ export default function Cursor() {
   const mouse = useRef({ x: 0, y: 0 });
   const pos = useRef({ x: 0, y: 0 });
 
-  // ✅ Mobile detection
+  // ✅ Detect mobile
   useEffect(() => {
     const mobile =
       /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
@@ -21,7 +21,7 @@ export default function Cursor() {
     setIsMobile(mobile);
   }, []);
 
-  // ✅ Mouse tracking
+  // ✅ Mouse move
   useEffect(() => {
     if (isMobile) return;
 
@@ -52,15 +52,15 @@ export default function Cursor() {
     });
   }, [isMobile]);
 
-  // ✅ Smooth animation
+  // ✅ Smooth follow
   useEffect(() => {
     if (isMobile) return;
 
-    let animationFrame: number;
+    let frame: number;
 
     const animate = () => {
-      pos.current.x += (mouse.current.x - pos.current.x) * 0.15;
-      pos.current.y += (mouse.current.y - pos.current.y) * 0.15;
+      pos.current.x += (mouse.current.x - pos.current.x) * 0.16;
+      pos.current.y += (mouse.current.y - pos.current.y) * 0.16;
 
       if (cursorRef.current) {
         cursorRef.current.style.left = pos.current.x + "px";
@@ -70,24 +70,26 @@ export default function Cursor() {
       if (liquidRef.current) {
         liquidRef.current.style.transform = `
           translate(-50%, -50%)
-          rotate(${Date.now() * 0.05}deg)
+          rotate(${Date.now() * 0.03}deg)
         `;
       }
 
-      animationFrame = requestAnimationFrame(animate);
+      frame = requestAnimationFrame(animate);
     };
 
     animate();
-    return () => cancelAnimationFrame(animationFrame);
+    return () => cancelAnimationFrame(frame);
   }, [isMobile]);
 
   if (isMobile) return null;
 
-  // ✅ Размеры по режимам
+  // ✅ Refined sizes (уменьшили project)
   const size =
-    mode === "default" ? 28 :
-    mode === "button" ? 60 :
-    80;
+    mode === "default"
+      ? 22
+      : mode === "button"
+      ? 42
+      : 56; // project (было 80)
 
   const isRing = mode !== "default";
 
@@ -103,43 +105,43 @@ export default function Cursor() {
         pointerEvents: "none",
         transform: "translate(-50%, -50%)",
         transition:
-          "width 0.3s ease, height 0.3s ease, border-radius 0.3s ease, box-shadow 0.3s ease, background 0.3s ease",
-        borderRadius: mode === "project" ? "35%" : "50%",
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
+          "width 0.25s ease, height 0.25s ease, border-radius 0.25s ease, box-shadow 0.25s ease, background 0.25s ease",
+        borderRadius: mode === "project" ? "40%" : "50%",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
         background: isRing
-          ? "rgba(168,85,247,0.08)"
-          : "rgba(168,85,247,0.15)",
+          ? "rgba(168,85,247,0.06)"
+          : "rgba(168,85,247,0.12)",
         border: isRing
-          ? "2px solid rgba(168,85,247,0.9)"
+          ? "1.5px solid rgba(192,132,252,0.9)"
           : "1px solid rgba(168,85,247,0.6)",
         boxShadow: isRing
           ? `
-            0 0 25px rgba(168,85,247,0.9),
-            0 0 70px rgba(168,85,247,0.4)
+            0 0 20px rgba(168,85,247,0.6),
+            0 0 50px rgba(168,85,247,0.25)
           `
           : `
-            0 0 15px rgba(168,85,247,0.6),
-            0 0 40px rgba(168,85,247,0.3)
+            0 0 10px rgba(168,85,247,0.5),
+            0 0 25px rgba(168,85,247,0.2)
           `,
         zIndex: 9999,
         overflow: "hidden",
       }}
     >
-      {/* ✅ Liquid animation */}
+      {/* ✅ Subtle liquid */}
       <div
         ref={liquidRef}
         style={{
           position: "absolute",
           top: "50%",
           left: "50%",
-          width: "140%",
-          height: "140%",
+          width: "130%",
+          height: "130%",
           background:
-            "radial-gradient(circle at 30% 30%, rgba(233,213,255,0.6), rgba(168,85,247,0.4), transparent 70%)",
+            "radial-gradient(circle at 30% 30%, rgba(233,213,255,0.4), rgba(168,85,247,0.25), transparent 70%)",
           borderRadius: "45%",
-          filter: "blur(12px)",
-          opacity: mode === "default" ? 0.7 : 0.4,
+          filter: "blur(14px)",
+          opacity: mode === "default" ? 0.6 : 0.35,
           transition: "opacity 0.3s ease",
         }}
       />

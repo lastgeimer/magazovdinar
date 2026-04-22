@@ -1,10 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Проверяем, является ли устройство мобильным
+    const checkIsMobile = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+        || window.matchMedia('(pointer: coarse)').matches;
+    };
+
+    setIsMobile(checkIsMobile());
+
+    // Если мобильное устройство, не инициализируем курсор
+    if (checkIsMobile()) return;
+
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
@@ -49,8 +61,15 @@ export default function Cursor() {
 
     return () => {
       document.removeEventListener('mousemove', onMove);
+      document.querySelectorAll('a, button, [data-hover]').forEach(el => {
+        el.removeEventListener('mouseenter', onEnter);
+        el.removeEventListener('mouseleave', onLeave);
+      });
     };
   }, []);
+
+  // Не рендерим курсор на мобильных устройствах
+  if (isMobile) return null;
 
   return (
     <>

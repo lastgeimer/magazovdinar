@@ -3,13 +3,12 @@ import { useEffect, useRef, useState } from "react";
 export default function Cursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
 
   const mouse = useRef({ x: 0, y: 0 });
   const pos = useRef({ x: 0, y: 0 });
-  const targetScale = useRef(1);
-  const currentScale = useRef(1);
 
-  // ✅ Проверка мобильного
+  // ✅ Проверка мобилки
   useEffect(() => {
     const mobile =
       /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
@@ -18,7 +17,7 @@ export default function Cursor() {
     setIsMobile(mobile);
   }, []);
 
-  // ✅ Отслеживание мыши
+  // ✅ Движение мыши
   useEffect(() => {
     if (isMobile) return;
 
@@ -31,38 +30,21 @@ export default function Cursor() {
     return () => window.removeEventListener("mousemove", move);
   }, [isMobile]);
 
-  // ✅ Магнит к кнопкам
+  // ✅ Hover detection
   useEffect(() => {
     if (isMobile) return;
 
-    const magneticElements = document.querySelectorAll(
+    const hoverElements = document.querySelectorAll(
       "a, button, [data-magnetic]"
     );
 
-    magneticElements.forEach((el) => {
-      const element = el as HTMLElement;
-
-      element.addEventListener("mousemove", (e: MouseEvent) => {
-        const rect = element.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-
-        const distanceX = e.clientX - centerX;
-        const distanceY = e.clientY - centerY;
-
-        mouse.current.x = centerX + distanceX * 0.3;
-        mouse.current.y = centerY + distanceY * 0.3;
-
-        targetScale.current = 1.8;
-      });
-
-      element.addEventListener("mouseleave", () => {
-        targetScale.current = 1;
-      });
+    hoverElements.forEach((el) => {
+      el.addEventListener("mouseenter", () => setIsHovering(true));
+      el.addEventListener("mouseleave", () => setIsHovering(false));
     });
   }, [isMobile]);
 
-  // ✅ Анимация
+  // ✅ Анимация движения
   useEffect(() => {
     if (isMobile) return;
 
@@ -72,14 +54,9 @@ export default function Cursor() {
       pos.current.x += (mouse.current.x - pos.current.x) * 0.15;
       pos.current.y += (mouse.current.y - pos.current.y) * 0.15;
 
-      currentScale.current +=
-        (targetScale.current - currentScale.current) * 0.15;
-
       if (cursorRef.current) {
-        cursorRef.current.style.transform = `
-          translate(${pos.current.x}px, ${pos.current.y}px)
-          scale(${currentScale.current})
-        `;
+        cursorRef.current.style.left = pos.current.x + "px";
+        cursorRef.current.style.top = pos.current.y + "px";
       }
 
       animationFrame = requestAnimationFrame(animate);
@@ -96,20 +73,37 @@ export default function Cursor() {
       ref={cursorRef}
       style={{
         position: "fixed",
-        width: 28,
-        height: 28,
-        borderRadius: "50%",
+        left: 0,
+        top: 0,
+        width: isHovering ? 60 : 28,
+        height: isHovering ? 60 : 28,
+        borderRadius: isHovering ? "40%" : "50%",
         pointerEvents: "none",
         transform: "translate(-50%, -50%)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-        background:
-          "radial-gradient(circle at 30% 30%, rgba(233,213,255,0.8), rgba(168,85,247,0.4) 40%, rgba(124,58,237,0.2) 70%, transparent 100%)",
-        border: "1px solid rgba(168,85,247,0.6)",
-        boxShadow: `
-          0 0 15px rgba(168,85,247,0.7),
-          0 0 40px rgba(168,85,247,0.4)
-        `,
+        transition: "width 0.3s ease, height 0.3s ease, border-radius 0.3s ease, background 0.3s ease, box-shadow 0.3s ease",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+
+        // ✅ MORPH: шар → кольцо
+        background: isHovering
+          ? "transparent"
+          : "radial-gradient(circle at 30% 30%, rgba(233,213,255,0.9), rgba(168,85,247,0.5) 40%, rgba(124,58,237,0.2) 70%)",
+
+        border: isHovering
+          ? "2px solid rgba(168,85,247,0.9)"
+          : "1px solid rgba(168,85,247,0.6)",
+
+        boxShadow: isHovering
+          ? `
+            0 0 20px rgba(168,85,247,0.9),
+            0 0 60px rgba(168,85,247,0.5),
+            inset 0 0 20px rgba(168,85,247,0.4)
+          `
+          : `
+            0 0 15px rgba(168,85,247,0.6),
+            0 0 40px rgba(168,85,247,0.3)
+          `,
+
         zIndex: 9999,
       }}
     />

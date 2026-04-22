@@ -1,56 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 
-const FRAME_SIZE = 128; // подгони если нужно
-
-const COLS = 3;
-const ROWS = 4;
-
-const IDLE_ROW = 0;
-const RUN_ROW = 2;
-const SIT_ROW = 3;
-const SLEEP_ROW = 3; // можно оставить тот же ряд если нет отдельной позы сна
-
-const RUN_FRAMES = 3;
-
-const FRICTION = 0.90;
-const SPEED = 0.15;
-
-const SLEEP_DELAY = 10000; // 10 секунд
-
-type TrailDot = {
+type Trail = {
   x: number;
   y: number;
-  life: number;
   id: number;
 };
 
 export default function Cursor() {
-  const dogRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const [trail, setTrail] = useState<Trail[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   const mouse = useRef({ x: 0, y: 0 });
-  const pos = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-  const velocity = useRef({ x: 0, y: 0 });
+  const pos = useRef({ x: 0, y: 0 });
 
-  const [frame, setFrame] = useState(0);
-  const [row, setRow] = useState(IDLE_ROW);
-  const [direction, setDirection] = useState(1);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isSleeping, setIsSleeping] = useState(false);
-  const [trail, setTrail] = useState<TrailDot[]>([]);
-
-  const lastMoveTime = useRef(Date.now());
-
-  // ✅ Определение мобильного устройства
+  // ✅ Проверка мобилки
   useEffect(() => {
     const mobile =
       /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
       window.matchMedia("(pointer: coarse)").matches;
 
     setIsMobile(mobile);
-
-    if (!mobile) {
-      document.body.style.cursor = "none";
-    }
   }, []);
 
   // ✅ Движение мыши
@@ -60,90 +30,30 @@ export default function Cursor() {
     const move = (e: MouseEvent) => {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
-      lastMoveTime.current = Date.now();
 
-      if (isSleeping) {
-        setIsSleeping(false);
-        setRow(IDLE_ROW);
-      }
+      // создаём след
+      setTrail((prev) => [
+        ...prev,
+        { x: e.clientX, y: e.clientY, id: Date.now() }
+      ].slice(-20));
     };
 
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
-  }, [isMobile, isSleeping]);
+  }, [isMobile]);
 
-  // ✅ Основная анимация
+  // ✅ Плавное следование
   useEffect(() => {
     if (isMobile) return;
 
     let animationFrame: number;
 
     const animate = () => {
-      const dx = mouse.current.x - pos.current.x;
-      const dy = mouse.current.y - pos.current.y;
+      pos.current.x += (mouse.current.x - pos.current.x) * 0.15;
+      pos.current.y += (mouse.current.y - pos.current.y) * 0.15;
 
-      velocity.current.x += dx * SPEED;
-      velocity.current.y += dy * SPEED;
-
-      velocity.current.x *= FRICTION;
-      velocity.current.y *= FRICTION;
-
-      pos.current.x += velocity.current.x;
-      pos.current.y += velocity.current.y;
-
-      const speed = Math.hypot(velocity.current.x, velocity.current.y);
-      const idleTime = Date.now() - lastMoveTime.current;
-
-      // ✅ Сон через 10 секунд
-      if (idleTime > SLEEP_DELAY) {
-        setIsSleeping(true);
-        setRow(SLEEP_ROW);
-      }
-
-      // ✅ Если не спит
-      if (!isSleeping) {
-        if (velocity.current.x !== 0) {
-          setDirection(velocity.current.x > 0 ? 1 : -1);
-        }
-
-        if (speed > 0.5) {
-          setRow(RUN_ROW);
-
-          // след
-          setTrail((prev) => [
-            ...prev,
-            {
-              x: pos.current.x,
-              y: pos.current.y,
-              life: 1,
-              id: Date.now(),
-            },
-          ].slice(-15));
-        } else {
-          setRow(IDLE_ROW);
-        }
-      }
-
-      // ✅ обновление следа
-      setTrail((prev) =>
-        prev
-          .map((t) => ({ ...t, life: t.life - 0.03 }))
-          .filter((t) => t.life > 0)
-      );
-
-      // ✅ дыхание во сне
-      const breathe = isSleeping
-        ? 1 + Math.sin(Date.now() * 0.002) * 0.05
-        : 1;
-
-      if (dogRef.current) {
-        dogRef.current.style.transform = `
-          translate(${pos.current.x - FRAME_SIZE / 2}px, ${
-          pos.current.y - FRAME_SIZE / 2
-        }px)
-          scaleX(${direction})
-          scale(${breathe})
-        `;
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${pos.current.x}px, ${pos.current.y}px)`;
       }
 
       animationFrame = requestAnimationFrame(animate);
@@ -151,62 +61,59 @@ export default function Cursor() {
 
     animate();
     return () => cancelAnimationFrame(animationFrame);
-  }, [isMobile, isSleeping]);
+  }, [isMobile]);
 
-  // ✅ Анимация бега
+  // ✅ Удаление старых точек следа
   useEffect(() => {
-    if (row !== RUN_ROW || isSleeping) {
-      setFrame(0);
-      return;
-    }
+    if (trail.length === 0) return;
 
-    const interval = setInterval(() => {
-      setFrame((prev) => (prev + 1) % RUN_FRAMES);
-    }, 120);
+    const timeout = setTimeout(() => {
+      setTrail((prev) => prev.slice(1));
+    }, 40);
 
-    return () => clearInterval(interval);
-  }, [row, isSleeping]);
+    return () => clearTimeout(timeout);
+  }, [trail]);
 
-  // ✅ Полностью отключаем на мобилках
   if (isMobile) return null;
 
   return (
     <>
       {/* След */}
-      {!isSleeping &&
-        trail.map((dot) => (
-          <div
-            key={dot.id}
-            style={{
-              position: "fixed",
-              left: dot.x,
-              top: dot.y,
-              width: 6,
-              height: 6,
-              background: "#a855f7",
-              borderRadius: "50%",
-              pointerEvents: "none",
-              opacity: dot.life,
-              transform: "translate(-50%, -50%)",
-              zIndex: 9998,
-            }}
-          />
-        ))}
+      {trail.map((dot, index) => (
+        <div
+          key={dot.id}
+          style={{
+            position: "fixed",
+            left: dot.x,
+            top: dot.y,
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            pointerEvents: "none",
+            transform: "translate(-50%, -50%)",
+            background: "radial-gradient(circle, #c084fc 0%, #7c3aed 60%, transparent 100%)",
+            opacity: index / trail.length,
+            zIndex: 9998,
+          }}
+        />
+      ))}
 
-      {/* Собака */}
+      {/* Основной курсор */}
       <div
-        ref={dogRef}
+        ref={cursorRef}
         style={{
           position: "fixed",
-          width: FRAME_SIZE,
-          height: FRAME_SIZE,
-          backgroundImage: "url('/dog.png')",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: `-${frame * FRAME_SIZE}px -${
-            row * FRAME_SIZE
-          }px`,
-          imageRendering: "pixelated",
+          width: 18,
+          height: 18,
+          borderRadius: "50%",
           pointerEvents: "none",
+          transform: "translate(-50%, -50%)",
+          background: "radial-gradient(circle at 30% 30%, #e9d5ff, #a855f7 40%, #6b21a8 80%)",
+          boxShadow: `
+            0 0 10px #a855f7,
+            0 0 25px rgba(168,85,247,0.6),
+            0 0 60px rgba(168,85,247,0.4)
+          `,
           zIndex: 9999,
         }}
       />
